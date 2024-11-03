@@ -11,7 +11,7 @@ This script therefore creates a note with the links to the latest articles (conf
 
 The publication date is put in the form of a link which allows us to either query with dataview the new articles of the day in our daily notes. Or to just be able to see them in the backlinks in our daily note.
 
-It requires a free API key on [RSS2json](https://rss2json.com/#rss_url=http%3A%2F%2Ffeeds.twit.tv%2Fbrickhouse.xml).
+It requires a API key on [RSS2json](https://rss2json.com/#rss_url=http%3A%2F%2Ffeeds.twit.tv%2Fbrickhouse.xml) (free if you use less than 25 rss feeds).
 
 You must first create a note (basic List of RSS feeds.md but configurable) in which you can place links to RSS feeds, one per line. For example :
 ```md
