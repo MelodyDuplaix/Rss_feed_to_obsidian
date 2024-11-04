@@ -92,7 +92,7 @@ async function start(params, settings) {
             
             feed.items.slice(0, numberOfPosts).forEach(post => {
                 const formattedDate = formatDate(post.pubDate);
-                output.push(`- ${formattedDate} [${post.title}](${post.link})\n`);
+                output.push(`- ${formattedDate} [${post.title}](${post.link}) (${moment(post.pubDate).format("HH:mm:ss")})\n`);
             });
             
             output.push('\n');
@@ -109,7 +109,7 @@ async function start(params, settings) {
         
         const date = moment(dateString).format(config.dateFormat);
         
-        return `[[${date}]]`;
+        return `[[${date}]] `;
     }
 
     // Main function
