@@ -1,20 +1,46 @@
 ---
-jour: 2024-11-04
+jour: 2024-11-04 17:00:00
 ---
 
 ```datacorejsx
 return function view() {
     let date = dc.useCurrentFile().$frontmatter.jour.value;
-    let filepath = dc.useCurrentFile().$path;
+	let filepath = dc.useCurrentFile().$path;
+	
+	const onClick = (file) => {
+	    app.fileManager.processFrontMatter(file, frontmatter => {  
+	        frontmatter["jour"] = moment().format("YYYY-MM-DD HH:mm:ss");
+	    });	
+	}
+	
+	const articles = dc.useQuery('@list-item and childof(@page and $name =  "Flux RSS")')
+	    .filter(p => {
+	        // Extraire la date
+	        const articleDate = moment(p.$text.slice(2, 12), "DD-MM-YYYY");
+	
+	        // Extraire l'heure entre parenthèses
+	        const timeMatch = p.$text.match(/\((\d{2}:\d{2}:\d{2})\)/);
+	        let articleTime = moment(); // Valeur par défaut au cas où l'heure ne serait pas trouvée
+	
+	        if (timeMatch) {
+	            // Créer un moment avec l'heure extraite
+	            const time = timeMatch[1]; // Ex. "07:56:24"
+	            articleTime = moment(time, "HH:mm:ss");
+	        }
+	
+	        // Combiner la date et l'heure pour comparer avec la date actuelle
+	        const articleDateTime = articleDate.set({
+	            hour: articleTime.hour(),
+	            minute: articleTime.minute(),
+	            second: articleTime.second() // On ajoute les secondes si nécessaire
+	        });
+	
+	        // Comparer avec la date actuelle
+	        console.log(moment(date.toString("DD-MM-YYYY HH:mm:ss")))
+	        return moment(date.toString("DD-MM-YYYY HH:mm:ss")).isBefore(articleDateTime);
+	    });
 
-    const onClick = (file) => {
-        app.fileManager.processFrontMatter(file, frontmatter => {  
-            frontmatter["jour"] = moment().format("YYYY-MM-DD");
-        });	
-    }
 
-    const articles = dc.useQuery('@list-item and childof(@page and $name =  "RSS Feed with datacore query")')
-        .filter(p => date < moment(p.$text.slice(2, 12), "DD-MM-YYYY"));
 
     return (
         <div>
@@ -29,7 +55,8 @@ return function view() {
                     </li>
                 ))}
             </ul>
-            <button onClick={() => onClick(app.vault.getFileByPath(filepath))}>All read</button>
+            <button onClick={() => onClick(app.vault.getFileByPath(filepath))}>Tout lu</button>
+            <button onClick={() => window.open('obsidian://adv-uri?commandid=quickadd%3Achoice%3A61ce138d-435a-4bf4-9c43-db4b3caf758b')}>Tout recharger</button>
         </div>
     );
 }
